@@ -1,34 +1,12 @@
-require 'faraday'
-require 'figaro'
-require 'pry'
-# TODO setup minitest
+require_relative 'near_earth_objects'
 
-# Load ENV vars via Figaro
-Figaro.application = Figaro::Application.new(environment: 'production', path: File.expand_path('../config/application.yml', __FILE__))
-Figaro.load
-
-puts "Welcome to Asteroids. Here you will find
-information about how close to extinction life on earth is on any given day."
-
+puts "________________________________________________________________________________________________________________________________"
+puts "Welcome to NEO. Here you will find information about how many meteors, astroids, comets pass by the earth every day. \nEnter a date below to get a list of the objects that have passed by the earth on that day."
 puts "Please enter a date in the following format YYYY-MM-DD."
+print ">>"
 
 date = gets.chomp
-
-conn = Faraday.new(
-  url: 'https://api.nasa.gov',
-  params: { start_date: date, api_key: ENV['nasa_api_key']}
-)
-
-asteroids_list_data = conn.get('/neo/rest/v1/feed')
-parsed_asteroids_data = JSON.parse(asteroids_list_data.body, symbolize_names: true)
-
-astroid_details = parsed_asteroids_data[:near_earth_objects][:"#{date}"].map do |astroid|
-  {
-    name: astroid[:name],
-    diameter: "#{astroid[:estimated_diameter][:feet][:estimated_diameter_max].to_i} ft",
-    miss_distance: "#{astroid[:close_approach_data][0][:miss_distance][:miles].to_i} miles"
-  }
-end
+astroid_details = NearEarthObjects.find_neos_by_date(date)
 
 column_labels = { name: "Name", diameter: "Diameter", miss_distance: "Missed The Earth By:" }
 column_data = column_labels.each_with_object({}) do |(col, label), hash|
@@ -50,9 +28,8 @@ def create_rows(astroid_data, column_info)
 end
 
 formated_date = DateTime.parse(date).strftime("%A %b %d, %Y")
-
+puts "______________________________________________________________________________"
 puts "\nHere is a list of astroids that almost hit the earth on #{formated_date}."
-
 puts divider
 puts header
 create_rows(astroid_details, column_data)
