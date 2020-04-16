@@ -8,6 +8,6 @@ Please follow these instructions for further enlightenment.
 - Clone this repo
 - Run `bundle install` to download and install all of the necessary dependencies
 - This project uses NASA's Astroids - NeoWs API. Please signup for an API key [here](https://api.nasa.gov/)
-- Once you have your api key, run `figaro install` and add your api_key to the `application.yml` located in the `config` folder. Please add your api key in the following format `nasa_api_key: <Your API KEY Goes Here>`
+- Once you have your api key, run `bundle exec figaro install` and add your api_key to the `application.yml` located in the `config` folder. Please add your api key in the following format `nasa_api_key: <Your API KEY Goes Here>`
 - This project uses minitest. You can run the tests with the following command `ruby near_earth_objects_test.rb`
 - To use the command line tool run `ruby start.rb`. You will be prompted to enter a date. Enter the date in the following format `YYYY-MM-DD` i.e. `2019-03-30`. Once you hit enter you will see information about the objects that came near to the earth on that day.
