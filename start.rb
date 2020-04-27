@@ -7,7 +7,8 @@ print ">>"
 
 date = gets.chomp
 formatted_date = DateTime.parse(date).strftime("%A %b %d, %Y")
-asteroid_details = NearEarthObjects.find_neos_by_date(date)
+near_earth_objects = NearEarthObjects.new(date)
+asteroid_details = near_earth_objects.asteroid_details
 asteroid_list = asteroid_details[:asteroid_list]
 total_number_of_asteroids = asteroid_details[:total_number_of_asteroids]
 largest_asteroid = asteroid_details[:biggest_asteroid]

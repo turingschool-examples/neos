@@ -6,33 +6,43 @@ Figaro.application = Figaro::Application.new(environment: 'production', path: Fi
 Figaro.load
 
 class NearEarthObjects
-  def self.find_neos_by_date(date)
+  def initialize(date)
+    @asteroids = parsed_asteroid_data(date)
+  end
+
+  def parsed_asteroid_data(date)
     conn = Faraday.new(
       url: 'https://api.nasa.gov',
       params: { start_date: date, api_key: ENV['nasa_api_key']}
     )
-    asteroids_list_data = conn.get('/neo/rest/v1/feed')
+    asteroid_data = conn.get('/neo/rest/v1/feed')
+    JSON.parse(asteroid_data.body, symbolize_names: true)[:near_earth_objects][:"#{date}"]
+  end
 
-    parsed_asteroids_data = JSON.parse(asteroids_list_data.body, symbolize_names: true)[:near_earth_objects][:"#{date}"]
+  def asteroid_details
+    {
+      asteroid_list: formatted_asteroid_data,
+      biggest_asteroid: largest_asteroid_diameter,
+      total_number_of_asteroids: total_number_of_asteroids
+    }
+  end
 
-    largest_asteroid_diameter = parsed_asteroids_data.map do |asteroid|
-      asteroid[:estimated_diameter][:feet][:estimated_diameter_max].to_i
-    end.max { |a,b| a <=> b}
-
-    total_number_of_asteroids = parsed_asteroids_data.count
-    
-    formatted_asteroid_data = parsed_asteroids_data.map do |asteroid|
+  def formatted_asteroid_data
+    @asteroids.map do |asteroid|
       {
         name: asteroid[:name],
         diameter: "#{asteroid[:estimated_diameter][:feet][:estimated_diameter_max].to_i} ft",
         miss_distance: "#{asteroid[:close_approach_data][0][:miss_distance][:miles].to_i} miles"
       }
     end
+  end
 
-    {
-      asteroid_list: formatted_asteroid_data,
-      biggest_asteroid: largest_asteroid_diameter,
-      total_number_of_asteroids: total_number_of_asteroids
-    }
+  def largest_asteroid_diameter
+    largest_asteroid = @asteroids.max_by { |asteroid| asteroid[:estimated_diameter][:feet][:estimated_diameter_max] }
+    largest_asteroid[:estimated_diameter][:feet][:estimated_diameter_max]
+  end
+
+  def total_number_of_asteroids
+    @asteroids.length
   end
 end
