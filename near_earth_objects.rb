@@ -6,6 +6,8 @@ Figaro.application = Figaro::Application.new(environment: 'production', path: Fi
 Figaro.load
 
 class NearEarthObjects
+  attr_reader :asteroids
+
   def initialize(date)
     @asteroids = parsed_asteroid_data(date)
   end
@@ -17,14 +19,6 @@ class NearEarthObjects
     )
     asteroid_data = conn.get('/neo/rest/v1/feed')
     JSON.parse(asteroid_data.body, symbolize_names: true)[:near_earth_objects][:"#{date}"]
-  end
-
-  def asteroid_details
-    {
-      asteroid_list: formatted_asteroid_data,
-      biggest_asteroid: largest_asteroid_diameter,
-      total_number_of_asteroids: total_number_of_asteroids
-    }
   end
 
   def formatted_asteroid_data
@@ -44,5 +38,13 @@ class NearEarthObjects
 
   def total_number_of_asteroids
     @asteroids.length
+  end
+
+  def asteroid_details
+    {
+      asteroid_list: formatted_asteroid_data,
+      biggest_asteroid: largest_asteroid_diameter,
+      total_number_of_asteroids: total_number_of_asteroids
+    }
   end
 end
