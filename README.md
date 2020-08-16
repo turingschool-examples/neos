@@ -23,6 +23,9 @@ Please follow these instructions for further enlightenment.
 With your partner look through `start.rb` and `near_earth_objects.rb`
 
 - Discuss is this 'good' or 'bad' code? Why?
+  - I would say this is primarily bad code, because it isn't easy to read, and does not adhere to single responsibility.
+  - there is a lot of excess code in the start file that would be better off located elsewhere, as presumably the start file is just for executing, not for definining etc
+  - near_earth_objects.rb is one method, and it is long. this should be abstracted out into helper methods that each are responsible for one thing and that make the code more understandable 
 
 ---
 
