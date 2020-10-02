@@ -29,7 +29,7 @@ class NearEarthObjects
     {
       astroid_list: formatted_asteroid_data,
       biggest_astroid: get_diameter(largest_astroid),
-      total_number_of_astroids: @astroids_data.count
+      total_number_of_astroids: total_number_of_astroids
     }
   end
 
@@ -55,5 +55,9 @@ class NearEarthObjects
 
   def get_miss_distance(astroid)
     astroid[:close_approach_data][0][:miss_distance][:miles].to_i
+  end
+
+  def total_number_of_astroids
+    @astroids_data.count
   end
 end
