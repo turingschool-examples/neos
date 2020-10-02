@@ -28,7 +28,7 @@ class NearEarthObjects
   def find_neos
     {
       astroid_list: formatted_asteroid_data,
-      biggest_astroid: largest_astroid_diameter,
+      biggest_astroid: get_diameter(largest_astroid),
       total_number_of_astroids: @astroids_data.count
     }
   end
@@ -47,7 +47,7 @@ class NearEarthObjects
     astroid[:estimated_diameter][:feet][:estimated_diameter_max].to_i
   end
 
-  def largest_astroid_diameter
+  def largest_astroid
     @astroids_data.max do |astroid_a, astroid_b|
       get_diameter(astroid_a) <=> get_diameter(astroid_b)
     end
