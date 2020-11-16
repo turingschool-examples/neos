@@ -1,22 +1,25 @@
 require 'faraday'
 require 'figaro'
 require 'pry'
+require_relative 'nasa_service'
+
 # Load ENV vars via Figaro
 Figaro.application = Figaro::Application.new(environment: 'production', path: File.expand_path('../config/application.yml', __FILE__))
 Figaro.load
 
 class NearEarthObjects
   def self.find_neos_by_date(date)
-    conn = Faraday.new(
-      url: 'https://api.nasa.gov',
-      params: { start_date: date, api_key: ENV['nasa_api_key']}
-    )
-    asteroids_list_data = conn.get('/neo/rest/v1/feed')
-
+    # conn = Faraday.new(
+    #   url: 'https://api.nasa.gov',
+    #   params: { start_date: date, api_key: ENV['nasa_api_key']}
+    # )
+    # asteroids_list_data = conn.get('/neo/rest/v1/feed')
+    asteroids_list_data = NASAService.asteroids(date)
     # require "pry"; binding.pry
     # Hash of dates in the week following the date with asteroids data in array
 
-    parsed_asteroids_data = JSON.parse(asteroids_list_data.body, symbolize_names: true)[:near_earth_objects][:"#{date}"]
+    # parsed_asteroids_data = JSON.parse(asteroids_list_data.body, symbolize_names: true)[:near_earth_objects][:"#{date}"]
+    parsed_asteroids_data = asteroids_list_data[:"#{date}"]
 
     largest_asteroid_diameter = parsed_asteroids_data.map do |asteroid|
       asteroid[:estimated_diameter][:feet][:estimated_diameter_max].to_i
