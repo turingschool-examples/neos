@@ -1,13 +1,7 @@
-require 'faraday'
-require 'figaro'
-require 'pry'
 require_relative 'nasa_service'
 require_relative 'asteroid'
 
-# Load ENV vars via Figaro
-Figaro.application = Figaro::Application.new(environment: 'production', path: File.expand_path('../config/application.yml', __FILE__))
-Figaro.load
-
+# Serves as a search facade object, organizing data and objects.
 class NearEarthObjects
   def self.find_neos_by_date(date)
     asteroids_data = NASAService.asteroids(date)
@@ -16,6 +10,10 @@ class NearEarthObjects
       Asteroid.new(asteroid_data)
     end
 
+    neos_data
+  end
+
+  def self.neos_data
     {
       asteroid_list: formatted_asteroid_data,
       biggest_asteroid: largest_asteroid_diameter,
