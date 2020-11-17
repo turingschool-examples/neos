@@ -1,6 +1,5 @@
 class NEOSView
-  attr_reader :asteroids, :total_asteroids, :biggest_asteroid
-
+  
   def initialize(asteroids, date)
     @asteroids = asteroids[:asteroid_list]
     @total_asteroids = asteroids[:total_number_of_asteroids]
