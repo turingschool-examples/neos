@@ -1,4 +1,11 @@
-# Reaches out to API and returns info
+require 'faraday'
+require 'figaro'
+
+# Load ENV vars via Figaro
+Figaro.application = Figaro::Application.new(environment: 'production', path: File.expand_path('../config/application.yml', __FILE__))
+Figaro.load
+
+# Reaches out to API and returns raw info
 class NASAService
   def self.connection(date)
     Faraday.new(
